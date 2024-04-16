@@ -20,6 +20,12 @@ public class RemoteRdpKeyboard extends RemoteKeyboard {
     protected InputCarriable remoteInput;
     private RdpCommunicator rdpcomm;
 
+    public static RemoteRdpKeyboard instance;
+
+    public boolean isConnected() {
+        return rdpcomm != null && rdpcomm.isInNormalProtocol();
+    }
+
     public RemoteRdpKeyboard(
             RdpCommunicator r, Viewable v, InputCarriable i, Handler h,
             boolean debugLog, boolean preferSendingUnicode
@@ -31,6 +37,7 @@ public class RemoteRdpKeyboard extends RemoteKeyboard {
         keyboardMapper = new RdpKeyboardMapper(preferSendingUnicode, debugLog);
         keyboardMapper.init(context);
         keyboardMapper.reset((RdpKeyboardMapper.KeyProcessingListener) r);
+        instance = this;
     }
 
     public boolean processLocalKeyEvent(int keyCode, KeyEvent evt, int additionalMetaState) {
