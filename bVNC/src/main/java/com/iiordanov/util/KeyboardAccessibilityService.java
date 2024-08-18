@@ -31,6 +31,65 @@ public class KeyboardAccessibilityService extends AccessibilityService {
 
         Log.d(TAG, "onKeyEvent: code " + keyCode + ", action " + action + ", modifier " + isMod);
 
+        if (action == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_ALT_RIGHT:
+                    keyCode = KeyEvent.KEYCODE_CTRL_RIGHT; // 交换右 ALT 与右 CTRL
+                    break;
+                case KeyEvent.KEYCODE_CTRL_RIGHT:
+                    keyCode = KeyEvent.KEYCODE_ALT_RIGHT; // 交换右 CTRL 与右 ALT
+                    break;
+                case KeyEvent.KEYCODE_ESCAPE:
+                    keyCode = KeyEvent.KEYCODE_CAPS_LOCK; // 交换 ESC 与 CAPS LOCK
+                    break;
+                case KeyEvent.KEYCODE_CAPS_LOCK:
+                    keyCode = KeyEvent.KEYCODE_ESCAPE; // 交换 CAPS LOCK 与 ESC
+                    isMod = true;
+                    break;
+            }
+            event = new KeyEvent(event.getDownTime(), event.getEventTime(),
+                    KeyEvent.ACTION_DOWN, keyCode, event.getRepeatCount(),
+                    event.getMetaState(), event.getDeviceId(), event.getScanCode());
+
+        } else if (action == KeyEvent.ACTION_UP) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_ALT_RIGHT:
+                    keyCode = KeyEvent.KEYCODE_CTRL_RIGHT; // 交换右 ALT 与右 CTRL
+                    break;
+                case KeyEvent.KEYCODE_CTRL_RIGHT:
+                    keyCode = KeyEvent.KEYCODE_ALT_RIGHT; // 交换右 CTRL 与右 ALT
+                    break;
+                case KeyEvent.KEYCODE_ESCAPE:
+                    keyCode = KeyEvent.KEYCODE_CAPS_LOCK; // 交换 ESC 与 CAPS LOCK
+                    break;
+                case KeyEvent.KEYCODE_CAPS_LOCK:
+                    keyCode = KeyEvent.KEYCODE_ESCAPE; // 交换 CAPS LOCK 与 ESC
+                    isMod = true;
+                    break;
+            }
+            event = new KeyEvent(event.getDownTime(), event.getEventTime(),
+                    KeyEvent.ACTION_UP, keyCode, event.getRepeatCount(),
+                    event.getMetaState(), event.getDeviceId(), event.getScanCode());
+        }
+
+        if (RemoteRdpKeyboard.instance != null && RemoteRdpKeyboard.instance.isConnected() && !BLACKLISTED_KEYS.contains(keyCode)) {
+            if (action == KeyEvent.ACTION_DOWN) {
+                if (!isMod) {
+                    RemoteRdpKeyboard.instance.repeatKeyEvent(keyCode, event);
+                } else {
+                    RemoteRdpKeyboard.instance.processLocalKeyEvent(keyCode, event, 0);
+                }
+                return true;
+            } else if (action == KeyEvent.ACTION_UP) {
+                if (!isMod) {
+                    RemoteRdpKeyboard.instance.stopRepeatingKeyEvent(); // 停止重复事件
+                } else {
+                    RemoteRdpKeyboard.instance.processLocalKeyEvent(keyCode, event, 0);
+                }
+                return true;
+            }
+        }
+
         if (RemoteRdpKeyboard.instance != null && RemoteRdpKeyboard.instance.isConnected() && !BLACKLISTED_KEYS.contains(keyCode)) {
             if (action == KeyEvent.ACTION_DOWN) {
                 if (!isMod) {
