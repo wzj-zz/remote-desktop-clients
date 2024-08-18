@@ -1,6 +1,6 @@
 # Change
-[lyc8503](https://github.com/lyc8503/remote-desktop-clients) 通过无障碍模式接口使常见 modifier (alt, ctrl, win etc.) 键能够工作
-我在他的基础通过无障碍模式接口上交换了 Capslock 和 Escape 以及 RAlt 和 RCtrl 键以适应我自己的需求，其中 Escape 可以作为修饰键使用(配合自定义的 ahk 脚本使用)
+[lyc8503](https://github.com/lyc8503/remote-desktop-clients) 通过无障碍模式接口使常见 modifier (`alt`, `ctrl`, `win` etc.) 键能够工作
+我在他的基础通过无障碍模式接口上交换了 `Capslock` 和 `Escape` 以及 `RAlt` 和 `RCtrl` 键以适应我自己的需求，其中 `Escape` 可以作为修饰键使用(配合自定义的 ahk 脚本使用)
 
 关键接口:
 `AccessibilityService.onKeyEvent`
